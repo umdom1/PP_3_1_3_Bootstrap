@@ -1,19 +1,21 @@
-package ru.denisov.PP_3_1_1_spring_boot.service;
+package ru.kata.spring.boot_security.demo.service;
 
-import ru.denisov.PP_3_1_1_spring_boot.model.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import ru.kata.spring.boot_security.demo.entitys.User;
 
 import java.util.List;
 
-public interface UserService {
+public interface UserService extends UserDetailsService {
 
-    void addUser(User user);
+    List<User> findAll();
 
-    List<User> getAllUsers();
+    User findById(Long id);
 
-    User getUser(long id);
+    void save(User user);
 
-    void updateUser(User user);
+    void update(Long id, User user);
 
-    void deleteUser(long id);
+    void delete(Long id);
 
+    User findByUsername(String username);
 }
