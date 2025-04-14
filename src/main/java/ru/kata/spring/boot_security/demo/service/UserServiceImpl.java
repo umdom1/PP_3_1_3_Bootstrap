@@ -58,7 +58,6 @@ public class UserServiceImpl implements UserService {
                     .collect(Collectors.toSet());
             user.setRoles(roles);
         }
-
         userRepository.save(user);
     }
 
@@ -75,7 +74,6 @@ public class UserServiceImpl implements UserService {
         if (!existingUser.getPassword().equals(user.getPassword())) {
             existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
         }
-
         userRepository.save(existingUser);
     }
 
@@ -95,17 +93,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-        System.out.println("Loaded user: " + user.getUsername());
-        System.out.println("Roles: " + user.getRoles());
-
-        return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
-                user.getPassword(),
-                user.getRoles()
-        );
+            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return user;
     }
 }

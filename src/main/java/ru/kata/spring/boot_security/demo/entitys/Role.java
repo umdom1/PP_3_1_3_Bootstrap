@@ -1,30 +1,46 @@
-package ru.kata.spring.boot_security.demo.model;
+package ru.kata.spring.boot_security.demo.entitys;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
-import java.util.Objects;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.util.Set;
 
 @Entity
-@Data
-@Table(name = "roles")
+@Table(name = "role")
 public class Role implements GrantedAuthority {
 
+    @Getter
+    @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private long id;
+    private Long id;
 
-    @Column (name = "role", unique = true)
+    @NotNull
+    @Size(min = 4, max = 20)
+    @Column(name = "name", nullable = false, unique = true)
     private String roleName;
 
+    @ManyToMany(mappedBy = "roles")
+    private Set<User> users;
 
     public Role() {
+
     }
 
-    public Role(String name) {
-        this.roleName = name;
+    public Role(String roleName) {
+        this.roleName = roleName;
+    }
+
+    public String getName() {
+        return roleName;
+    }
+
+    public void setName(String roleName) {
+        this.roleName = roleName;
     }
 
     @Override
@@ -33,20 +49,11 @@ public class Role implements GrantedAuthority {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Role)) return false;
-        Role role = (Role) o;
-        return getId() == role.getId() && Objects.equals(getRoleName(), role.getRoleName());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getRoleName());
-    }
-
-    @Override
     public String toString() {
-        return this.roleName;
+        return "Role{id=" + id + ", role='" + roleName + "'}";
+    }
+
+    public String getFormattedName() {
+        return roleName.replace("ROLE_", "");
     }
 }
